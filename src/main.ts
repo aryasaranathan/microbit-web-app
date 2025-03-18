@@ -1,0 +1,76 @@
+import { MicrobitConnectorUSB } from "./microbit/connection";
+import { MicrobitConnectorBluetooth } from "./bluetooth/connection";
+import { flashMicrobitUSB } from "./microbit/flasher";
+//import { Plotter } from './plot/plotter';
+//import Plotly from 'plotly.js-dist';
+
+const microbitConnectorUSB = new MicrobitConnectorUSB();
+const microbitConnectorBluetooth = new MicrobitConnectorBluetooth();
+
+async function setupMicrobitUSB() {
+    try {
+        const isConnected = await microbitConnectorUSB.connect();
+        if (isConnected) {
+            console.log("Micro:bit connected!");
+            // Add any additional logic to handle after successful connection
+        } else {
+            console.log("Failed to connect to Micro:bit.");
+        }
+    } catch (error) {
+        console.error("Error connecting to Micro:bit:", error);
+    }
+}
+
+async function setupMicrobitBluetooth() {
+    try {
+        const isConnected = await microbitConnectorBluetooth.connect();
+        if (isConnected) {
+            console.log("Micro:bit connected!");
+            // Add any additional logic to handle after successful connection
+        } else {
+            console.log("Failed to connect to Micro:bit.");
+        }
+    } catch (error) {
+        console.error("Error connecting to Micro:bit:", error);
+    }
+}
+
+// // const plotter = new Plotter();
+
+// function onResetGraphClick() {
+//   plotter.resetPlot();
+// }
+
+async function flashMicrobitHandler() {
+    try {
+        const usb = microbitConnectorUSB.getUsbConnection();
+        if (usb) {
+            await flashMicrobitUSB(usb);
+            console.log("Micro:bit flashed successfully!");
+        } else {
+            console.log("Micro:bit USB connection is not initialized.");
+        }
+    } catch (error) {
+        console.error("Error flashing Micro:bit:", error);
+    }
+}
+
+function disconnectMicrobit() {
+    microbitConnectorUSB.disconnect();
+    microbitConnectorBluetooth.disconnect();
+}
+
+// Attach to the connect button click (user interaction required)
+document.getElementById("connectUSBBtn")?.addEventListener("click", setupMicrobitUSB);
+
+document.getElementById("connectBluetoothBtn")?.addEventListener("click", setupMicrobitBluetooth);
+
+// Attach to the flash button click (user interaction required)
+document.getElementById("flashBtn")?.addEventListener("click", flashMicrobitHandler);
+
+// Attach to the disconnect button click (user interaction required)
+document.getElementById("disconnectBtn")?.addEventListener("click", disconnectMicrobit);
+
+// document.getElementById('resetGraphBtn')?.addEventListener('click', onResetGraphClick);
+
+// export { plotter };

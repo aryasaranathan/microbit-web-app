@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>micro:bit Streaming</title>
+    <script src="https://cdn.plot.ly/plotly-2.11.1.min.js"></script>
+</head>
+<body>
+    <!-- Buttons to connect and flash the micro:bit -->
+    <button id="connectUSBBtn">Connect to Micro:bit via USB</button>
+    <button id="connectBluetoothBtn">Connect to Micro:bit via Bluetooth</button>
+    <button id="flashBtn">Flash HEX File</button>
+    <button id="disconnectBtn">Disconnect from Micro:bit</button>
+    <button id="resetGraphBtn">Reset Graph</button>
+
+    <!-- Display the connection status -->
+    <p id="status">Status: Disconnected</p>
+
+    <!-- Display the serial data or output here -->
+    <pre id="output"></pre>
+
+    <!-- Container for the Plotly graph -->
+    <div id="plot"></div>
+
+    <!-- Linking to the main TypeScript file -->
+    <script type="module" src="/src/main.ts"></script>
+</body>
+</html>
