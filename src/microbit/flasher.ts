@@ -1,4 +1,4 @@
-import { createUniversalHexFlashDataSource, MicrobitWebUSBConnection, MicrobitWebBluetoothConnection } from "@microbit/microbit-connection";
+import { createUniversalHexFlashDataSource, MicrobitWebUSBConnection} from "@microbit/microbit-connection";
 
 /**
  * Loads the HEX file from the public directory.
