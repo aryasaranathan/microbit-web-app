@@ -47,6 +47,7 @@ async function flashMicrobitHandlerAccelerometer() {
         if (usb) {
             await flashMicrobitUSBAccelerometer(usb);
             console.log("Micro:bit flashed successfully!");
+            setupMicrobitUSB();
         } else {
             console.log("Micro:bit USB connection is not initialized.");
         }
@@ -61,6 +62,7 @@ async function flashMicrobitHandlerButtons() {
         if (usb) {
             await flashMicrobitUSBButtons(usb);
             console.log("Micro:bit flashed successfully!");
+            setupMicrobitUSB();
         } else {
             console.log("Micro:bit USB connection is not initialized.");
         }
