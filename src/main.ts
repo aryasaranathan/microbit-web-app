@@ -1,6 +1,6 @@
 import { MicrobitConnectorUSB } from "./microbit/connection";
 import { MicrobitConnectorBluetooth } from "./bluetooth/connection";
-import { flashMicrobitUSB } from "./microbit/flasher";
+import { flashMicrobitUSBAccelerometer, flashMicrobitUSBButtons } from "./microbit/flasher";
 //import { Plotter } from './plot/plotter';
 //import Plotly from 'plotly.js-dist';
 
@@ -41,11 +41,25 @@ async function setupMicrobitBluetooth() {
 //   plotter.resetPlot();
 // }
 
-async function flashMicrobitHandler() {
+async function flashMicrobitHandlerAccelerometer() {
     try {
         const usb = microbitConnectorUSB.getUsbConnection();
         if (usb) {
-            await flashMicrobitUSB(usb);
+            await flashMicrobitUSBAccelerometer(usb);
+            console.log("Micro:bit flashed successfully!");
+        } else {
+            console.log("Micro:bit USB connection is not initialized.");
+        }
+    } catch (error) {
+        console.error("Error flashing Micro:bit:", error);
+    }
+}
+
+async function flashMicrobitHandlerButtons() {
+    try {
+        const usb = microbitConnectorUSB.getUsbConnection();
+        if (usb) {
+            await flashMicrobitUSBButtons(usb);
             console.log("Micro:bit flashed successfully!");
         } else {
             console.log("Micro:bit USB connection is not initialized.");
@@ -66,7 +80,10 @@ document.getElementById("connectUSBBtn")?.addEventListener("click", setupMicrobi
 document.getElementById("connectBluetoothBtn")?.addEventListener("click", setupMicrobitBluetooth);
 
 // Attach to the flash button click (user interaction required)
-document.getElementById("flashBtn")?.addEventListener("click", flashMicrobitHandler);
+document.getElementById("flashBtnAccelerometer")?.addEventListener("click", flashMicrobitHandlerAccelerometer);
+
+// Attach to the flash button click (user interaction required)
+document.getElementById("flashBtnButtons")?.addEventListener("click", flashMicrobitHandlerButtons);
 
 // Attach to the disconnect button click (user interaction required)
 document.getElementById("disconnectBtn")?.addEventListener("click", disconnectMicrobit);
