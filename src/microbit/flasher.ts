@@ -42,7 +42,7 @@ function updateFlashStatus(message: string) {
 function updateFlashProgress(percentage: number) {
     const progressElement = document.getElementById("flashProgress");
     if (progressElement) {
-        progressElement.textContent = percentage.toString();
+        (progressElement as HTMLProgressElement).value = percentage;
     }
 }
 
