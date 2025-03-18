@@ -67,7 +67,7 @@ export class MicrobitConnectorUSB {
                 console.log("✅ Successfully parsed:", parsedData);
     
                 // ✅ Handle different message types
-                if ((parsedData.type === "config") && (this.graphConfig == null)) {
+                if ((parsedData.type === "config") && (this.graphConfig != parsedData)) {
                     this.handleConfig(parsedData);
                 } else if (parsedData.type === "data") {
                     this.handleData(parsedData);
