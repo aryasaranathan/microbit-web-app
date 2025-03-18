@@ -1,5 +1,5 @@
 {
-  "name": "microbit-streaming",
+  "name": "microbit-web-app",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -13,6 +13,7 @@
     "vite": "^6.2.0"
   },
   "dependencies": {
-    "@microbit/microbit-connection": "^0.0.0-alpha.35"
+    "@microbit/microbit-connection": "^0.0.0-alpha.35",
+    "plotly.js-dist": "^3.0.1"
   }
 }
