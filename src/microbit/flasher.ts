@@ -5,8 +5,8 @@ import { createUniversalHexFlashDataSource, MicrobitWebUSBConnection} from "@mic
  * @returns The HEX file contents as a string.
  */
 async function loadHexFile(): Promise<string> {
-    //const response = await fetch("microbit-NDJSON-streamer (9).hex");
-    const response = await fetch("microbit-button_bluetooth (4).hex");
+    const response = await fetch("accelerometer.hex");
+    //const response = await fetch("buttons).hex");
     //const response = await fetch("BLE_All_Services_CODAL_0-2-40-ABDLIMTU-P.hex");
     if (!response.ok) {
         throw new Error(`Failed to load HEX file: ${response.statusText}`);
