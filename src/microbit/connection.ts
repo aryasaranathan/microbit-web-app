@@ -85,6 +85,7 @@ export class MicrobitConnectorUSB {
     private handleConfig(config: any) {
         console.log("Received new graph configuration:", config);
         this.graphConfig = config;
+        const series = config.series;
         
         if (config.graphType === "bar") {
             // Use the sensor list from the config as the fixed x-axis categories.
@@ -96,7 +97,7 @@ export class MicrobitConnectorUSB {
             };
     
             const layout = {
-                title: "Live Data from Micro:bit",
+                title: config.title,
                 xaxis: { title: config.xLabel, type: "category" },
                 yaxis: { title: config.yLabel, range: [config.scale.min, config.scale.max] }
             };
@@ -106,19 +107,20 @@ export class MicrobitConnectorUSB {
         } else {
             // Existing logic for other graph types (line/scatter)
             this.plotData = {};
-            const traces = config.sensors.map((sensor: string) => {
-                this.plotData[sensor] = {
+            const traces = series.map((sensor: any, index: number) => {
+                this.plotData[sensor.name] = {
                     x: [],
                     y: [],
-                    name: sensor,
+                    name: sensor.displayName,
                     type: config.graphType === "bar" ? "bar" : "scatter",
-                    mode: config.graphType === "line" ? "lines" : "markers"
+                    mode: config.graphType === "line" ? "lines" : "markers",
+                    line: { color: sensor.color }
                 };
-                return this.plotData[sensor];
+                return this.plotData[sensor.name];
             });
     
             const layout = {
-                title: "Live Data from Micro:bit",
+                title: config.title,
                 xaxis: { title: config.xLabel },
                 yaxis: { title: config.yLabel, range: [config.scale.min, config.scale.max] }
             };
