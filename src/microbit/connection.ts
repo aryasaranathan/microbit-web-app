@@ -142,11 +142,12 @@ export class MicrobitConnectorUSB {
             const traceIndices: number[] = [];
         
             // Loop through the sensor names in the same order as in the configuration
-            this.graphConfig.sensors.forEach((sensor: string, index: number) => {
+            this.graphConfig.series.forEach((sensor: any, index: number) => {
+                const sensorName = sensor.name; // Use the `name` property from series
                 // Only update if there's a value for this sensor
-                if (data.values[sensor] !== undefined) {
+                if (data.values[sensorName] !== undefined) {
                     update.x.push([data.timestamp / 1000]); // Convert timestamp to seconds
-                    update.y.push([data.values[sensor]]);
+                    update.y.push([data.values[sensorName]]);
                     traceIndices.push(index);
                 }
             });
@@ -158,8 +159,9 @@ export class MicrobitConnectorUSB {
             Plotly.extendTraces("plot", update, traceIndices, MAX_POINTS);
         } else if (this.graphConfig.graphType === "bar") {
             // Create a new y array based on the sensor labels from the configuration.
-            let newY = this.graphConfig.sensors.map((sensor: string) => {
-                return data.values[sensor] !== undefined ? data.values[sensor] : 0;
+            let newY = this.graphConfig.series.map((sensor: any) => {
+                const sensorName = sensor.name; // Use `name` from series
+                return data.values[sensorName] !== undefined ? data.values[sensorName] : 0;
             });
 
             // Update the single bar trace with the new y values.
