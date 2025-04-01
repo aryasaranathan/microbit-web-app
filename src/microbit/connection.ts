@@ -126,7 +126,7 @@ export class MicrobitConnectorUSB {
         } else if (config.graphType === "line"){
             // Existing logic for other graph types (line/scatter)
             this.plotData = {};
-            const traces = series.map((sensor: any, index: number) => {
+            const traces = series.map((sensor: any) => {
                 this.plotData[sensor.name] = {
                     x: [],
                     y: [],
@@ -148,7 +148,7 @@ export class MicrobitConnectorUSB {
         } else if (config.graphType === "scatter"){
             // Existing logic for other graph types (line/scatter)
             this.plotData = {};
-            const traces = series.map((sensor: any, index: number) => {
+            const traces = series.map((sensor: any) => {
                 this.plotData[sensor.name] = {
                     x: [],
                     y: [],
