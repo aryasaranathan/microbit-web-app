@@ -2,11 +2,23 @@
 function sendConfig() {
     let config = {
         type: "config",
-        graphType: "line",
-        xLabel: "Time (ms)",
-        yLabel: "Acceleration (mg)",
-        scale: { min: -1024, max: 1024 },
-        sensors: ["accelX", "accelY", "accelZ"]
+        graphType: "scatter",
+        title: "Live Accelerometer Data",
+        x: {
+            label: "Time (ms)",
+            min: 0,
+            max: 10000
+        },
+        y: {
+            label: "Acceleration (mg)",
+            min: -1024,
+            max: 1024
+        },
+        series: [
+            { displayName: "Accel X", name: "accelX", color: "#ff0000", symbol: "x" },
+            { displayName: "Accel Y", name: "accelY", color: "#00ff00", symbol: "x" },
+            { displayName: "Accel Z", name: "accelZ", color: "#0000ff", symbol: "x" }
+        ]
     };
     let configJSON = JSON.stringify(config);
     serial.writeLine(configJSON); // Ensure full message sent
@@ -37,7 +49,7 @@ basic.forever(function () {
 
     if (counter == 0) {
         sendConfig();
-        basic.pause(100);  //  Small delay to ensure full transmission
+        basic.pause(100);  // Small delay to ensure full transmission
     }
 
     sendData();

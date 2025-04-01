@@ -2,11 +2,12 @@
 function sendConfig() {
     let config = {
         type: "config",
-        graphType: "bar",
-        xLabel: "Time (ms)",
-        yLabel: "Press Count",
-        scale: { min: 0, max: 50 }, // Adjust max based on expected button presses
-        sensors: ["left", "right"]
+        graphType: "pie",
+        title: "Live button presses",
+        series: [
+            { displayName: "Left", name: "left", color: "#ff0000"},
+            { displayName: "Right", name: "right", color: "#00ff00"}
+        ]
     };
     let configJSON = JSON.stringify(config);
     serial.writeLine(configJSON); // Ensure full message sent
