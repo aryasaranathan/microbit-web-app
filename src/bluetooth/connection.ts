@@ -1,7 +1,6 @@
 import { createWebBluetoothConnection, MicrobitWebBluetoothConnection } from "@microbit/microbit-connection";
 import { ConnectionStatus } from "@microbit/microbit-connection";
 import { UARTDataEvent } from "@microbit/microbit-connection";
-import Plotly from "plotly.js-dist";
 import { handleConfig, handleData, GraphConfig, PlotData } from "../utils/messageHandler";
 
 export class MicrobitConnectorBluetooth { // initiates connection, parses data, and graphs accordingly
@@ -78,7 +77,7 @@ export class MicrobitConnectorBluetooth { // initiates connection, parses data, 
                 if (parsedData.type === "config") {
                     this.graphConfig = handleConfig(parsedData, this.graphConfig, this.plotData);
                 } else if (parsedData.type === "data") {
-                    handleData(parsedData, this.graphConfig, this.plotData);
+                    handleData(parsedData, this.graphConfig);
                 }
             } catch (error) {
                 console.warn("❌ JSON Parse Error:", error);

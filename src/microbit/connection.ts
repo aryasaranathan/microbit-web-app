@@ -1,7 +1,7 @@
 import { createWebUSBConnection, MicrobitWebUSBConnection } from "@microbit/microbit-connection";
 import { ConnectionStatus } from "@microbit/microbit-connection";
 import { SerialDataEvent } from "@microbit/microbit-connection";
-import Plotly from "plotly.js-dist";
+//import Plotly from "plotly.js-dist";
 import { handleConfig, handleData, GraphConfig, PlotData } from "../utils/messageHandler";
 
 export class MicrobitConnectorUSB {
@@ -71,7 +71,7 @@ export class MicrobitConnectorUSB {
                 if (parsedData.type === "config") {
                     this.graphConfig = handleConfig(parsedData, this.graphConfig, this.plotData);
                 } else if (parsedData.type === "data") {
-                    handleData(parsedData, this.graphConfig, this.plotData);
+                    handleData(parsedData, this.graphConfig);
                 }
             } catch (error) {
                 console.warn("❌ JSON Parse Error:", error);

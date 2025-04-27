@@ -95,7 +95,7 @@ export function handleConfig(config: GraphConfig, graphConfig: GraphConfig | nul
 /**
  * Handles the data message and updates the graph.
  */
-export function handleData(data: any, graphConfig: GraphConfig | null, plotData: PlotData): void {
+export function handleData(data: any, graphConfig: GraphConfig | null): void {
     if (!graphConfig) {
         console.warn("Received data before configuration was set. Ignoring.");
         return;
