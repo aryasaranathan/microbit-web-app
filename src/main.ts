@@ -1,6 +1,6 @@
 import { MicrobitConnectorUSB } from "./microbit/connection";
 import { MicrobitConnectorBluetooth } from "./bluetooth/connection";
-import { flashMicrobitUSBAccelerometer, flashMicrobitUSBButtons, flashMicrobitUSBButtonsPie, flashMicrobitUSBAccelerometerScatter} from "./microbit/flasher";
+import { flashMicrobitUSBAccelerometer, flashMicrobitUSBButtons, flashMicrobitUSBButtonsPie, flashMicrobitUSBAccelerometerScatter, flashMicrobitUSBButtonsBluetooth} from "./microbit/flasher";
 //import { Plotter } from './plot/plotter';
 //import Plotly from 'plotly.js-dist';
 
@@ -101,6 +101,21 @@ async function flashMicrobitHandlerButtonsPie() {
     }
 }
 
+async function flashMicrobitHandlerButtonsBluetooth() {
+    try {
+        const usb = microbitConnectorUSB.getUsbConnection();
+        if (usb) {
+            await flashMicrobitUSBButtonsBluetooth(usb);
+            console.log("Micro:bit flashed successfully!");
+            setupMicrobitBluetooth();
+        } else {
+            console.log("Micro:bit USB connection is not initialized.");
+        }
+    } catch (error) {
+        console.error("Error flashing Micro:bit:", error);
+    }
+}
+
 function disconnectMicrobit() {
     microbitConnectorUSB.disconnect();
     microbitConnectorBluetooth.disconnect();
@@ -122,6 +137,8 @@ document.getElementById("flashBtnButtonsPie")?.addEventListener("click", flashMi
 
 // Attach to the flash button click (user interaction required)
 document.getElementById("flashBtnButtons")?.addEventListener("click", flashMicrobitHandlerButtons);
+
+document.getElementById("flashBtnButtonsBluetooth")?.addEventListener("click", flashMicrobitHandlerButtonsBluetooth);
 
 // Attach to the disconnect button click (user interaction required)
 document.getElementById("disconnectBtn")?.addEventListener("click", disconnectMicrobit);

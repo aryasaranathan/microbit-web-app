@@ -44,6 +44,14 @@ async function loadHexFileButtons(): Promise<string> {
     return await response.text();
 }
 
+async function loadHexFileButtonsBluetooth(): Promise<string> {
+    const response = await fetch("buttons_bluetooth.hex");
+    if (!response.ok) {
+        throw new Error(`Failed to load HEX file: ${response.statusText}`);
+    }
+    return await response.text();
+}
+
 /**
  * Updates the flashing status on the web page.
  * @param message The status message to display.
@@ -168,6 +176,33 @@ export async function flashMicrobitUSBAccelerometerScatter(usb: MicrobitWebUSBCo
 
         console.log("Flashing complete!");
         updateFlashStatus("Flashing complete! Connect via USB again to see live data.");
+    } catch (error) {
+        console.error("Error flashing Micro:bit:", error);
+        if (error instanceof Error) {
+            updateFlashStatus(`Error flashing Micro:bit: ${error.message}`);
+        } else {
+            updateFlashStatus("Error flashing Micro:bit: Unknown error");
+        }
+    }
+}
+
+export async function flashMicrobitUSBButtonsBluetooth(usb: MicrobitWebUSBConnection) {
+    try {
+        const hexData = await loadHexFileButtonsBluetooth();
+        console.log("HEX file loaded successfully.");
+        updateFlashStatus("HEX file loaded successfully.");
+
+        await usb.flash(createUniversalHexFlashDataSource(hexData), {
+            partial: true,
+            progress: (percentage: number | undefined) => {
+                const progress = percentage ?? 0;
+                console.log(`Flashing progress: ${progress}%`);
+                updateFlashProgress(progress);
+            },
+        });
+
+        console.log("Flashing complete!");
+        updateFlashStatus("Flashing complete! Connect via Bluetooth to see live data.");
     } catch (error) {
         console.error("Error flashing Micro:bit:", error);
         if (error instanceof Error) {
