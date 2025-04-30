@@ -5,7 +5,7 @@ function sendConfig() {
         graphType: "scatter",
         title: "Live Accelerometer Data",
         x: {
-            label: "Time (ms)",
+            label: "time (seconds)",
             min: 0,
             max: 10000
         },

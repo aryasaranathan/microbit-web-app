@@ -38,7 +38,7 @@ export function handleConfig(config: GraphConfig, graphConfig: GraphConfig | nul
         const layout = {
             title: {text: config.title}, // Set the graph title
             xaxis: { 
-                title: { text: config.x.label }, // Explicitly set x-axis label
+                title: { text: config.x?.label || "" }, // Explicitly set x-axis label
                 type: "category" 
             },
             yaxis: { 
