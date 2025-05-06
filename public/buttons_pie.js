@@ -5,8 +5,8 @@ function sendConfig() {
         graphType: "pie",
         title: "Live button presses",
         series: [
-            { displayName: "Left", name: "left", color: "#ff0000"},
-            { displayName: "Right", name: "right", color: "#00ff00"}
+            { displayName: "Left", y_column: "left", color: 0xff0000, icon: "circle" },
+            { displayName: "Right", y_column: "right", color: 0x00ff00, icon: "circle" }
         ]
     };
     let configJSON = JSON.stringify(config);

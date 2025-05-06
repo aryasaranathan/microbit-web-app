@@ -15,9 +15,9 @@ function sendConfig() {
             max: 1024
         },
         series: [
-            { displayName: "Accel X", name: "accelX", color: "#ff0000", symbol: "x" },
-            { displayName: "Accel Y", name: "accelY", color: "#00ff00", symbol: "x" },
-            { displayName: "Accel Z", name: "accelZ", color: "#0000ff", symbol: "x" }
+            { displayName: "Accel X", x_column: "time", y_column: "accelX", color: 0xff0000, icon: "x" },
+            { displayName: "Accel Y", x_column: "time", y_column: "accelY", color: 0x00ff00, icon: "x" },
+            { displayName: "Accel Z", x_column: "time", y_column: "accelZ", color: 0x0000ff, icon: "x" }
         ]
     };
     let configJSON = JSON.stringify(config);

@@ -5,12 +5,17 @@ export interface GraphConfig {
     title: string;
     x: { label: string; min: number; max: number };
     y: { label: string; min: number; max: number };
-    series: Array<{ name: string; displayName: string; color?: string; symbol?: string }>;
+    series: Array<{ x_column: string; y_column: string; displayName?: string; color?: number; icon?: string }>;
+    //y_column is used as a unique identifier for each series
 }
 
 export interface PlotData {
     [key: string]: any;
 }
+
+function numToColorCode(num: number): string {
+    return "#" + num.toString(16).padStart(6, "0");
+  } // colors received as an integer, so they must first be converted to hex
 
 /**
  * Handles the configuration message and initializes the graph.
@@ -28,17 +33,17 @@ export function handleConfig(config: GraphConfig, graphConfig: GraphConfig | nul
     graphConfig = config; // Update the graphConfig reference
 
     if (config.graphType === "bar") {
-        plotData.x = config.series.map((sensor) => sensor.name);
+        plotData.x = config.series.map((sensor) => sensor.y_column);
         plotData.y = config.series.map(() => 0);
         plotData.type = "bar";
         plotData.marker = {
-            color: config.series.map((sensor) => sensor.color || "blue"),
+            color: config.series.map((sensor) => numToColorCode(sensor.color || 0x0000ff)), // Default to blue
         };
 
         const layout = {
             title: {text: config.title}, // Set the graph title
             xaxis: { 
-                title: { text: config.x?.label || "" }, // Explicitly set x-axis label
+                title: { text: config.x?.label || "Category" }, // Explicitly set x-axis label
                 type: "category" 
             },
             yaxis: { 
@@ -49,11 +54,11 @@ export function handleConfig(config: GraphConfig, graphConfig: GraphConfig | nul
 
         Plotly.newPlot("plot", [plotData], layout);
     } else if (config.graphType === "pie") {
-        plotData.labels = config.series.map((sensor) => sensor.name);
+        plotData.labels = config.series.map((sensor) => sensor.y_column);
         plotData.values = config.series.map(() => 0);
         plotData.type = "pie";
         plotData.marker = {
-            colors: config.series.map((sensor) => sensor.color || "blue"),
+            colors: config.series.map((sensor) => numToColorCode(sensor.color || 0x0000ff)), // Default to blue
         };
 
         const layout = {title: {text: config.title}};
@@ -61,20 +66,21 @@ export function handleConfig(config: GraphConfig, graphConfig: GraphConfig | nul
     } else if (config.graphType === "line" || config.graphType === "scatter") {
         plotData = {};
         const traces = config.series.map((sensor) => {
-            plotData[sensor.name] = {
+            const uniqueId = sensor.y_column;
+            plotData[uniqueId] = {
                 x: [],
                 y: [],
-                name: sensor.displayName,
+                name: sensor.displayName || uniqueId,
                 type: config.graphType === "scatter" ? "scatter" : "line",
                 mode: config.graphType === "scatter" ? "markers" : "lines",
-                line: { color: sensor.color },
+                line: { color: numToColorCode(sensor.color || 0x0000ff) }, // Default to blue
                 marker: {
-                    symbol: sensor.symbol || "circle",
+                    symbol: sensor.icon || "circle",
                     size: 6,
-                    color: sensor.color || "blue",
+                    color: numToColorCode(sensor.color || 0x0000ff), // Default to blue
                 },
             };
-            return plotData[sensor.name];
+            return plotData[uniqueId];
         });
 
         const layout = {
@@ -108,9 +114,11 @@ export function handleData(data: any, graphConfig: GraphConfig | null): void {
         const traceIndices: number[] = [];
 
         graphConfig.series.forEach((sensor, index) => {
-            if (Object.prototype.hasOwnProperty.call(data.values, sensor.name)) {
+            const yColumn = sensor.y_column;
+
+            if (data.values[yColumn] !== undefined) {
                 update.x.push([data.timestamp / 1000]);
-                update.y.push([data.values[sensor.name]]);
+                update.y.push([data.values[yColumn]]);
                 traceIndices.push(index);
             }
         });
@@ -124,17 +132,19 @@ export function handleData(data: any, graphConfig: GraphConfig | null): void {
             }
         }
     } else if (graphConfig.graphType === "bar") {
-        const newY = graphConfig.series.map((sensor) =>
-            data.values[sensor.name] !== undefined ? data.values[sensor.name] : 0
-        );
+        const newY = graphConfig.series.map((sensor) => {
+            const yColumn = sensor.y_column;
+            return data.values[yColumn] !== undefined ? data.values[yColumn] : 0;
+        });
 
         if (newY.length > 0) {
             Plotly.update("plot", { y: [newY] }, {}, [0]);
         }
     } else if (graphConfig.graphType === "pie") {
-        const newValues = graphConfig.series.map((sensor) =>
-            data.values[sensor.name] !== undefined ? data.values[sensor.name] : 0
-        );
+        const newValues = graphConfig.series.map((sensor) => {
+            const yColumn = sensor.y_column;
+            return data.values[yColumn] !== undefined ? data.values[yColumn] : 0;
+        });
 
         if (newValues.length > 0) {
             Plotly.update("plot", { values: [newValues] }, {}, [0]);

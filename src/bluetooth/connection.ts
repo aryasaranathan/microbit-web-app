@@ -8,6 +8,7 @@ export class MicrobitConnectorBluetooth { // initiates connection, parses data, 
     private dataBuffer: string = "";
     private graphConfig: GraphConfig | null = null; // Store the latest configuration
     private plotData: PlotData = {}; // Stores sensor traces
+    private lastSeenPacket: Uint8Array | null = null;
 
     async connect(): Promise<boolean> {
         try { // use connection library to connect
@@ -23,6 +24,8 @@ export class MicrobitConnectorBluetooth { // initiates connection, parses data, 
                 this.bluetooth.addEventListener("uartdata", this.handleSerialData.bind(this));
                 console.log("Serial data event listener added.");
                 this.updateStatus("Connected");
+
+                this.bluetooth.uartWrite(new Uint8Array([100, 97, 116, 97, 112, 108, 111, 116, 10])); // Signal MICROBIT
                 return true;
             } else {
                 console.error("Failed to connect to micro:bit. Status:", status);
@@ -48,12 +51,20 @@ export class MicrobitConnectorBluetooth { // initiates connection, parses data, 
     private textDecoder = new TextDecoder("utf-8"); 
 
     private handleSerialData(event: UARTDataEvent) {
+        if (this.lastSeenPacket !== null && this.lastSeenPacket.every((value, index) => value === event.value[index])) {
+            console.log("duplicated packet");
+            this.lastSeenPacket = null;
+            return;
+        } else {
+            this.lastSeenPacket = event.value;
+        } // packets are compared to avoid duplicates
+
         console.log("Serial (bluetooth) data received:", event.value);
 
         const chunk = this.textDecoder.decode(event.value);
         console.log("Decoded BLE chunk:", chunk);
     
-        // ✅ Preserve `\n` and append data as-is to avoid breaking JSON format
+        
         this.dataBuffer += chunk;
         //console.log("Data arrived: ", event.data);
     
@@ -65,7 +76,7 @@ export class MicrobitConnectorBluetooth { // initiates connection, parses data, 
     
             if (jsonString.trim().length==0) {
                 jsonString = "";
-                continue; // ✅ Ignore empty lines
+                continue; 
             }
     
             try {
@@ -73,7 +84,7 @@ export class MicrobitConnectorBluetooth { // initiates connection, parses data, 
                 const parsedData = JSON.parse(jsonString);
                 console.log("✅ Successfully parsed:", parsedData);
     
-                // ✅ Handle different message types
+                // Handle different message types
                 if (parsedData.type === "config") {
                     this.graphConfig = handleConfig(parsedData, this.graphConfig, this.plotData);
                 } else if (parsedData.type === "data") {

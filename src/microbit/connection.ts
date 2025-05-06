@@ -24,6 +24,8 @@ export class MicrobitConnectorUSB {
                 this.usb.addEventListener("serialdata", this.handleSerialData.bind(this));
                 console.log("Serial data event listener added.");
                 this.updateStatus("Connected");
+
+                this.usb.serialWrite("dataplot\n"); // Signal MICROBIT
                 return true;
             } else {
                 console.error("Failed to connect to micro:bit. Status:", status);
